@@ -1,8 +1,8 @@
 import { randomUUID } from 'node:crypto';
 
-import { DynamoDBMock, PutCommand } from '../infra/dynamo';
-import { SendMessageCommand, SQSClient } from '../infra/queue';
-import { SendEmailCommand, SESClient } from '../infra/mail';
+import { DynamoDBMock, PutCommand } from '../infra-mock/dynamo';
+import { SendMessageCommand, SQSClient } from '../infra-mock/queue';
+import { SendEmailCommand, SESClient } from '../infra-mock/mail';
 
 export class PlaceOrder {
   async execute() {

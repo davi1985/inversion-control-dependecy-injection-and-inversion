@@ -1,24 +1,19 @@
-import { randomUUID } from 'node:crypto';
-
+import { Order } from '../entities/Order';
 import { DynamoDBMock, PutCommand } from '../infra-mock/dynamo';
-import { SendMessageCommand, SQSClient } from '../infra-mock/queue';
 import { SendEmailCommand, SESClient } from '../infra-mock/mail';
+import { SendMessageCommand, SQSClient } from '../infra-mock/queue';
 
 export class PlaceOrder {
   async execute() {
     const customerEmail = 'davisilvaphoto@gmail.com';
     const amount = Math.ceil(Math.random() * 1000);
-    const orderId = randomUUID();
+    const order = new Order(customerEmail, amount);
 
     // Save order in database
     const dynamoClient = new DynamoDBMock({ region: 'us-east-1' });
     const putItemCommand = new PutCommand({
       TableName: 'Orders',
-      Item: {
-        id: orderId,
-        email: customerEmail,
-        amount,
-      },
+      Item: order,
     });
 
     await dynamoClient.send(putItemCommand);
@@ -27,7 +22,7 @@ export class PlaceOrder {
     const sqsClient = new SQSClient({ region: 'us-east-1' });
     const sendMessageCommand = new SendMessageCommand({
       QueueURL: 'fake-url',
-      MessageBody: JSON.stringify({ orderId }),
+      MessageBody: JSON.stringify({ orderId: order.id }),
     });
 
     await sqsClient.send(sendMessageCommand);
@@ -42,7 +37,7 @@ export class PlaceOrder {
       Message: {
         Subject: {
           Charset: 'utf-8',
-          Data: `Pedido #${orderId} confirmado.`,
+          Data: `Pedido #${order.id} confirmado.`,
         },
         Body: {
           Html: {
@@ -60,6 +55,6 @@ export class PlaceOrder {
 
     await sesClient.send(sendEmailCommand);
 
-    return { orderId };
+    return { orderId: order.id };
   }
 }

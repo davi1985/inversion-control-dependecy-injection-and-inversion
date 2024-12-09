@@ -7,7 +7,10 @@ export class SQSClient {
 
   async send(command: SendMessageCommand) {
     this.#items.add(JSON.stringify(command));
-    console.log({ database: 'Publish message' });
+
+    console.log({
+      queue: JSON.parse(command.props.MessageBody),
+    });
   }
 }
 
@@ -17,5 +20,5 @@ type PutCommandProps = {
 };
 
 export class SendMessageCommand {
-  constructor(private props: PutCommandProps) {}
+  constructor(public props: PutCommandProps) {}
 }

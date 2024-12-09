@@ -7,7 +7,10 @@ export class SESClient {
 
   async send(command: SendEmailCommand) {
     this.#items.add(JSON.stringify(command));
-    console.log({ database: 'Send e-mail' });
+
+    console.log({
+      email: `Send e-mail to: ${command.props.Destination.toAddresses[0]}`,
+    });
   }
 }
 
@@ -30,5 +33,5 @@ type SendEmailCommandProps = {
   };
 };
 export class SendEmailCommand {
-  constructor(private props: SendEmailCommandProps) {}
+  constructor(public props: SendEmailCommandProps) {}
 }

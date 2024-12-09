@@ -8,7 +8,8 @@ export class DynamoDBMock {
 
   async send(command: PutCommand) {
     this.#items.add(JSON.stringify(command));
-    console.log({ database: 'Save order' });
+
+    console.log({ database: `Save order: ${command.props.Item.id}` });
   }
 }
 
@@ -18,5 +19,5 @@ type PutCommandProps = {
 };
 
 export class PutCommand {
-  constructor(private props: PutCommandProps) {}
+  constructor(public props: PutCommandProps) {}
 }

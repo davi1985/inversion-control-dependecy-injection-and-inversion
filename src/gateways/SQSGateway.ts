@@ -1,7 +1,7 @@
 import { SendMessageCommand, SQSClient } from '../infra-mock/queue';
 
 export class SQSGateway {
-  private client: SQSClient;
+  private readonly client: SQSClient;
 
   constructor() {
     this.client = new SQSClient({ region: 'us-east-1' });

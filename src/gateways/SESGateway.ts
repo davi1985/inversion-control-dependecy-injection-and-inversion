@@ -6,8 +6,9 @@ type SendEmailParams = {
   subject: string;
   html: string;
 };
+
 export class SESGateway {
-  private client: SESClient;
+  private readonly client: SESClient;
 
   constructor() {
     this.client = new SESClient({ region: 'us-east-1' });

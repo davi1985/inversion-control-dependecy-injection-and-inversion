@@ -13,11 +13,11 @@ export class PlaceOrder {
     const sesGateway = new SESGateway();
 
     await dynamoOrdersRepository.create(order);
-    await sqsGateway.publishMessage({ orderId: order.id });
+    await sqsGateway.publishMessage({ orderId: order.getId() });
     await sesGateway.sendEmail({
       from: 'JStoe <noreplay@mateus.dev.br>',
       to: [customerEmail],
-      subject: `Pedido #${order.id} confirmado.`,
+      subject: `Pedido #${order.getId()} confirmado.`,
       html: `
         <h1>E ai Davi!</h1>
         <p>Passando aqui só avisar que o seu pedido já foi confirmado e em breve você receberá a confirmação do pagamento e a nota fiscal aqui no seu e-mail.</p>
@@ -25,6 +25,6 @@ export class PlaceOrder {
         <small>{{ tabela com os itens do pedido }}</small>`,
     });
 
-    return { orderId: order.id };
+    return { orderId: order.getId() };
   }
 }

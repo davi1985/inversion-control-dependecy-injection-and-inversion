@@ -2,12 +2,12 @@ type ItemDB = { id: string; email: string; amount: number };
 type Props = { region: string };
 
 export class DynamoDBMock {
-  #items: Set<string> = new Set();
+  private readonly items: Set<string> = new Set();
 
   constructor(private region: Props) {}
 
   async send(command: PutCommand) {
-    this.#items.add(JSON.stringify(command));
+    this.items.add(JSON.stringify(command));
 
     console.log({ database: `Save order: ${command.props.Item.id}` });
   }

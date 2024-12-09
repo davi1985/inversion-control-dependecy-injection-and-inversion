@@ -2,7 +2,7 @@ import { Order } from '../entities/Order';
 import { DynamoDBMock, PutCommand } from '../infra-mock/dynamo';
 
 export class DynamoOrdersRepository {
-  private client: DynamoDBMock;
+  private readonly client: DynamoDBMock;
 
   constructor() {
     this.client = new DynamoDBMock({ region: 'us-east-1' });
@@ -11,7 +11,11 @@ export class DynamoOrdersRepository {
   async create(order: Order): Promise<void> {
     const command = new PutCommand({
       TableName: 'Orders',
-      Item: order,
+      Item: {
+        id: order.getId(),
+        email: order.getEmail(),
+        amount: order.getAmount(),
+      },
     });
 
     await this.client.send(command);

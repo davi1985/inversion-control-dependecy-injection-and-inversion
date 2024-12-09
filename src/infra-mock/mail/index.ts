@@ -1,12 +1,12 @@
 type Props = { region: string };
 
 export class SESClient {
-  #items: Set<string> = new Set();
+  private items: Set<string> = new Set();
 
   constructor(private props: Props) {}
 
   async send(command: SendEmailCommand) {
-    this.#items.add(JSON.stringify(command));
+    this.items.add(JSON.stringify(command));
 
     console.log({
       email: `Send e-mail to: ${command.props.Destination.toAddresses[0]}`,

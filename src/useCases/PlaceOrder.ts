@@ -15,7 +15,7 @@ export class PlaceOrder {
     await dynamoOrdersRepository.create(order);
     await sqsGateway.publishMessage({ orderId: order.getId() });
     await sesGateway.sendEmail({
-      from: 'JStoe <noreplay@mateus.dev.br>',
+      from: 'JStack <noreplay@mateus.dev.br>',
       to: [customerEmail],
       subject: `Pedido #${order.getId()} confirmado.`,
       html: `

@@ -1,20 +1,25 @@
+import { Inject } from '../di/Inject';
 import { Order } from '../entities/Order';
-import { SESGateway } from '../gateways/SESGateway';
-import { SQSGateway } from '../gateways/SQSGateway';
-import { DynamoOrdersRepository } from '../repository/DynamoOrdersRepository';
+import { IEmailGateway } from '../interfaces/gateways/IEmailGateway';
+import { IQueueGateway } from '../interfaces/gateways/IQueueGateway';
+import { IOrderRepository } from '../interfaces/repositories/IOrdersRepository';
 
 export class PlaceOrder {
+  constructor(
+    @Inject('OrdersRepository')
+    private readonly ordersRepository: IOrderRepository,
+    @Inject('QueueGateway') private readonly queueGateway: IQueueGateway,
+    @Inject('EmailGateway') private readonly emailGateway: IEmailGateway
+  ) {}
+
   async execute() {
     const customerEmail = 'davisilvaphoto@gmail.com';
     const amount = Math.ceil(Math.random() * 1000);
     const order = new Order(customerEmail, amount);
-    const dynamoOrdersRepository = new DynamoOrdersRepository();
-    const sqsGateway = new SQSGateway();
-    const sesGateway = new SESGateway();
 
-    await dynamoOrdersRepository.create(order);
-    await sqsGateway.publishMessage({ orderId: order.getId() });
-    await sesGateway.sendEmail({
+    await this.ordersRepository.create(order);
+    await this.queueGateway.publishMessage({ orderId: order.getId() });
+    await this.emailGateway.sendEmail({
       from: 'JStack <noreplay@mateus.dev.br>',
       to: [customerEmail],
       subject: `Pedido #${order.getId()} confirmado.`,

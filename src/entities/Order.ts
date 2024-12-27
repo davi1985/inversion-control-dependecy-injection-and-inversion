@@ -2,8 +2,8 @@ import { randomUUID } from 'node:crypto';
 
 export class Order {
   private readonly id: string;
-  private email: string;
-  private amount: number;
+  private readonly email: string;
+  private readonly amount: number;
 
   constructor(email: string, amount: number) {
     this.validate(email, amount);

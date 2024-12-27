@@ -1,13 +1,10 @@
 import { SendEmailCommand, SESClient } from '../infra-mock/mail';
+import {
+  IEmailGateway,
+  SendEmailParams,
+} from '../interfaces/gateways/IEmailGateway';
 
-type SendEmailParams = {
-  from: string;
-  to: string[];
-  subject: string;
-  html: string;
-};
-
-export class SESGateway {
+export class SESGateway implements IEmailGateway {
   private readonly client: SESClient;
 
   constructor() {

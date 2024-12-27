@@ -1,6 +1,7 @@
 import { SendMessageCommand, SQSClient } from '../infra-mock/queue';
+import { IQueueGateway } from '../interfaces/gateways/IQueueGateway';
 
-export class SQSGateway {
+export class SQSGateway implements IQueueGateway {
   private readonly client: SQSClient;
 
   constructor() {
